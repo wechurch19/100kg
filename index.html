@@ -95,6 +95,13 @@ input,select,textarea{font-family:inherit;font-size:16px}
 .wp{animation:wpf 2.4s ease-in-out infinite alternate}
 .wp.w2{animation-delay:-.8s}.wp.w3{animation-delay:-1.6s}
 @keyframes wpf{to{transform:translateY(-4px)}}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 4px}
+.st{position:relative;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:16px;background:var(--panel);border:1px solid var(--line2)}
+.st .k{font-family:var(--num);font-weight:500;font-size:10px;letter-spacing:.26em;color:var(--mut)}
+.st .v{font-family:var(--num);font-weight:700;font-size:26px;line-height:1.1;color:var(--acc)}
+.st .u{margin-left:auto;font-size:12px;color:var(--mut);font-weight:700;text-align:right}
+.live{width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);animation:blink 1.4s ease-in-out infinite;flex:none}
+.vw{margin-top:9px;font-size:12px;color:var(--mut)}
 .rule{display:flex;align-items:center;gap:10px;color:var(--mut);margin:12px 0 16px;font-size:11px;letter-spacing:.3em;font-family:var(--num);font-weight:500}
 .rule::before,.rule::after{content:"";flex:1;height:1px;background:var(--line2)}
 .grid4{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -353,6 +360,10 @@ input,select,textarea{font-family:inherit;font-size:16px}
           </g>
         </g>
       </svg></div>
+      <div class="stats" id="stats">
+        <div class="st"><span class="live"></span><div><div class="k">TODAY</div><div class="v" id="stToday">…</div></div><div class="u">오늘 방문자</div></div>
+        <div class="st"><div><div class="k">TOTAL</div><div class="v" id="stTotal">…</div></div><div class="u">누적 방문자</div></div>
+      </div>
       <div class="rule">CHOOSE YOUR ROUTE</div>
       <div class="grid4" id="home4"></div>
       <div class="rank" id="rank"></div>
@@ -477,6 +488,15 @@ const FIELD_ID={region:'fRegion',food:'fFood',mood:'fMood',age:'fAge'};
 
 const LS={get(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
 const _c=LS.get('jg_data');
+let VID=LS.get('jg_vid');if(!VID){VID='v'+Math.random().toString(36).slice(2,12)+Date.now().toString(36);LS.set('jg_vid',VID);}
+let STATS=LS.get('jg_stats');
+const VW=LS.get('jg_vw')||{};
+function renderStats(){
+  const f=n=>Number(n).toLocaleString();
+  $('stToday').textContent=STATS?f(STATS.today):'…';
+  $('stTotal').textContent=STATS?f(STATS.total):'…';
+}
+
 let DATA=_c||[], loaded=!!_c, loading=false, loadErr=false;   // 저장해 둔 목록이 있으면 즉시 표시 후 새로 갱신
 let cur={dim:null,val:null}, sortMode='new', query='';
 let F=null;      // 폼 상태
@@ -556,6 +576,7 @@ function enter(){
   if(entered)return; entered=true;
   $('cw').classList.add('open');
   if(!loaded&&!loading)loadData();
+  gs('visit',VID).then(s=>{STATS=s;LS.set('jg_stats',s);renderStats();}).catch(()=>{});
   $('nav').classList.add('show');
   setTimeout(()=>{$('v-intro').classList.add('leave');},150);
   setTimeout(()=>{show('v-home');$('v-intro').classList.remove('leave');},270);
@@ -581,7 +602,7 @@ function rankData(){
   return {list,rank};
 }
 function rankRow(r,n){
-  const meta=[r.region,r.food].filter(Boolean).join(' · ')||r.menu||'';
+  const meta=([r.region,r.food].filter(Boolean).join(' · ')||r.menu||'')+' · 조회 '+(r.views||0).toLocaleString();
   return '<button class="rk'+(n<=3?' g'+n:'')+'" style="--w:'+Math.max(8,r.rating*10)+'%" data-id="'+esc(r.id)+'"><span class="no">'+n+'</span>'
     +'<span class="th2">'+(r.mainPhoto?'<img loading="lazy" decoding="async" src="'+pu(r.mainPhoto,120)+'" alt="">':PH)+'</span>'
     +'<span class="in"><div class="nm">'+esc(r.name)+'</div><div class="mt">'+esc(meta)+'</div></span>'
@@ -662,7 +683,7 @@ function renderList(){
       +'<div class="bd"><h4>'+esc(r.name)+'</h4>'
       +(r.menu?'<div class="mn">추천 · '+esc(r.menu)+'</div>':'')
       +(r.comment?'<div class="cm">'+esc(r.comment)+'</div>':'')
-      +(tags?'<div class="tags">'+tags+'</div>':'')+'</div></button>';
+      +(tags?'<div class="tags">'+tags+'</div>':'')+'<div class="vw">조회 '+(r.views||0).toLocaleString()+'</div></div></button>';
   }).join('');
 }
 $('cards').addEventListener('click',e=>{const c=e.target.closest('.card');if(c)openDetail(c.dataset.id);});
@@ -674,6 +695,14 @@ $('lRefresh').onclick=()=>{loaded=false;renderList();loadData();};
 $('fab').onclick=async()=>{const pw=await askPw();if(pw){PW=pw;openForm(null);}};
 
 /* ============ 상세 ============ */
+function showViews(r){const e=$('dViews');if(e&&$('detail').dataset.id===r.id)e.textContent=(r.views||0).toLocaleString()+'회';}
+function countView(r){   // 같은 기기는 30분에 1번만 셈
+  const now=Date.now();
+  if(VW[r.id]&&now-VW[r.id]<1800000)return;
+  VW[r.id]=now;LS.set('jg_vw',VW);
+  r.views=(r.views||0)+1;showViews(r);refreshAll();
+  gs('addView',r.id).then(n=>{if(n>0){r.views=n;LS.set('jg_data',DATA);showViews(r);refreshAll();}}).catch(()=>{});
+}
 function openDetail(id){
   const r=DATA.find(x=>x.id===id);if(!r)return;
   const tags=KEYS.filter(k=>r[k]).map(k=>'<span class="tag">'+esc(r[k])+'</span>').join('');
@@ -681,6 +710,7 @@ function openDetail(id){
   $('detail').innerHTML=
     '<div class="d-main">'+(r.mainPhoto?'<img id="dMainImg" decoding="async" src="'+pu(r.mainPhoto,640)+'" alt="">':PH)+'</div>'
     +'<div class="d-body"><h3>'+esc(r.name)+'</h3><div class="tags" style="margin:0 0 6px">'+tags+'</div>'
+    +'<div class="row"><b>조회수</b><span id="dViews">'+(r.views||0).toLocaleString()+'회</span></div>'
     +'<div class="row"><b>별점</b><span>'+pips(r.rating)+' <strong>'+r.rating+'/10</strong></span></div>'
     +(r.menu?'<div class="row"><b>추천메뉴</b><span>'+esc(r.menu)+'</span></div>':'')
     +(r.address?'<div class="row"><b>주소</b><span>'+esc(r.address)+'<br><a target="_blank" rel="noopener" href="https://map.naver.com/p/search/'+encodeURIComponent(r.address)+'">지도에서 보기 ›</a></span></div>':'')
@@ -689,6 +719,7 @@ function openDetail(id){
     +'<div class="acts"><button class="x" id="dClose">닫기</button><button class="pri" id="dEdit">수정</button><button class="del" id="dDel">삭제</button></div>';
   $('detail').dataset.id=id;
   open('ovDetail');
+  countView(r);
 }
 $('detail').addEventListener('click',async e=>{
   const id=$('detail').dataset.id;const r=DATA.find(x=>x.id===id);if(!r)return;
@@ -924,7 +955,7 @@ $('sSave').onclick=async()=>{
 
 /* ESC / 뒤로가기 키 */
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){['lb','ovDetail','ovSDetail','ovPick','ovConfirm','ovSug'].forEach(shut);}});
-renderHome();
+renderHome();renderStats();
 loadData();loadSug();   // 입장 화면에서 미리 불러오기
 </script>
 </body>
