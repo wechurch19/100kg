@@ -90,6 +90,11 @@ input,select,textarea{font-family:inherit;font-size:16px}
 .legB{animation:legB .36s steps(1) infinite}
 @keyframes legA{0%{opacity:1}50%{opacity:0}}
 @keyframes legB{0%{opacity:0}50%{opacity:1}}
+.bob{animation:bob2 .36s ease-in-out infinite alternate}
+@keyframes bob2{to{transform:translateY(-1.2px)}}
+.wp{animation:wpf 2.4s ease-in-out infinite alternate}
+.wp.w2{animation-delay:-.8s}.wp.w3{animation-delay:-1.6s}
+@keyframes wpf{to{transform:translateY(-4px)}}
 .rule{display:flex;align-items:center;gap:10px;color:var(--mut);margin:12px 0 16px;font-size:11px;letter-spacing:.3em;font-family:var(--num);font-weight:500}
 .rule::before,.rule::after{content:"";flex:1;height:1px;background:var(--line2)}
 .grid4{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -312,19 +317,39 @@ input,select,textarea{font-family:inherit;font-size:16px}
         <h1>장유 맛집 <em>탐험대</em></h1>
         <p>길 위의 한 끼를 기록하는 모험가들의 지도</p>
       </div>
-      <div class="chartstrip"><svg viewBox="0 0 340 96" aria-hidden="true">
-        <defs><linearGradient id="ar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8f53c" stop-opacity=".26"/><stop offset="1" stop-color="#c8f53c" stop-opacity="0"/></linearGradient></defs>
-        <g stroke="#233229" stroke-width="1" stroke-dasharray="3 5"><path d="M0 24H340M0 48H340M0 72H340"/></g>
-        <path d="M0 78L34 70L60 74L92 54L122 60L156 40L188 48L222 28L256 36L290 16L322 22L340 10V96H0Z" fill="url(#ar)"/>
-        <path class="ln" d="M0 78L34 70L60 74L92 54L122 60L156 40L188 48L222 28L256 36L290 16L322 22L340 10" fill="none" stroke="#c8f53c" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-        <g fill="#080d0b" stroke="#c8f53c" stroke-width="2"><circle cx="92" cy="54" r="3"/><circle cx="156" cy="40" r="3"/><circle cx="222" cy="28" r="3"/><circle cx="290" cy="16" r="3"/></g>
+      <div class="chartstrip"><svg viewBox="0 0 340 112" aria-hidden="true">
+        <g stroke="#233229" stroke-width="1" stroke-dasharray="3 5"><path d="M0 30H340M0 58H340"/></g>
+        <path d="M0 92C60 82 100 98 160 88S260 72 292 80" fill="none" stroke="#c8f53c" stroke-opacity=".55" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="0.1 8"/>
+        <g class="wp" fill="none" stroke="#c8f53c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".75">
+          <g transform="translate(66,66)"><path d="M-8 0h16a8 8 0 0 1-16 0z"/><path d="M-3-5c-1.5-1.5 1.5-2.5 0-4M3-5c-1.5-1.5 1.5-2.5 0-4"/></g>
+        </g>
+        <g class="wp w2" fill="none" stroke="#c8f53c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".75">
+          <g transform="translate(142,60)"><path d="M-6-4h12v6a6 6 0 0 1-12 0z"/><path d="M6-2h2a2.5 2.5 0 0 1 0 5H6"/><path d="M-2-8c-1-1.2 1-2 0-3.5M2-8c-1-1.2 1-2 0-3.5"/></g>
+        </g>
+        <g class="wp w3" fill="none" stroke="#c8f53c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".75">
+          <g transform="translate(216,56)"><circle r="7"/><circle r="2.2"/></g>
+        </g>
         <g>
-          <animateMotion dur="5s" repeatCount="indefinite" calcMode="linear" path="M0 78L34 70L60 74L92 54L122 60L156 40L188 48L222 28L256 36L290 16L322 22L340 10"/>
-          <g transform="translate(-14,-41) scale(.92)" fill="none" stroke="#c8f53c" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="24" cy="7" r="4.2" fill="#c8f53c" stroke="none"/>
-            <path d="M23 13L16 28"/>
-            <g class="legA"><path d="M16 28L26 30L25 41"/><path d="M16 28L9 37L2 35"/><path d="M22 16L29 21L33 16"/><path d="M22 16L15 19L10 25"/></g>
-            <g class="legB"><path d="M16 28L20 38L15 46"/><path d="M16 28L12 36L7 44"/><path d="M22 16L16 22L12 17"/><path d="M22 16L27 22L32 25"/></g>
+          <circle cx="314" cy="61" r="14" fill="none" stroke="#c8f53c" stroke-width="2"><animate attributeName="r" from="14" to="28" dur="1.7s" repeatCount="indefinite"/><animate attributeName="opacity" from=".6" to="0" dur="1.7s" repeatCount="indefinite"/></circle>
+          <path d="M314 86c-9-10-14-16-14-24a14 14 0 0 1 28 0c0 8-5 14-14 24z" fill="#c8f53c"/>
+          <g fill="none" stroke="#0b1210" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M308.5 53v6a2.5 2.5 0 0 0 5 0v-6M311 53v16"/><path d="M320 69V53c-2.8 1.8-3.8 4.6-3.8 8H320"/></g>
+        </g>
+        <g>
+          <animateMotion dur="7s" repeatCount="indefinite" calcMode="linear" path="M0 92C60 82 100 98 160 88S260 72 292 80"/>
+          <g transform="translate(-20,-37) scale(.88)" fill="none" stroke="#c8f53c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <g class="bob">
+              <rect x="13" y="14" width="8.5" height="12" rx="3" fill="#c8f53c" stroke="none" opacity=".85"/>
+              <circle cx="24" cy="9.5" r="3.7" fill="#c8f53c" stroke="none"/>
+              <path d="M16.8 6.2a7.2 7.2 0 0 1 14.4 0z" fill="#c8f53c" stroke="none"/>
+              <ellipse cx="24" cy="6.4" rx="9" ry="1.7" fill="#c8f53c" stroke="none"/>
+              <path d="M24 14L22 28"/>
+              <path d="M24 16L19 21L17 27"/>
+              <path d="M24 16L29 20.5L34 17.5"/>
+              <circle cx="38" cy="12.5" r="4.6" stroke-width="2.3"/>
+              <path d="M34.6 15.8L33.2 17.8" stroke-width="2.6"/>
+            </g>
+            <g class="legA"><path d="M22 28L27 35L28 42"/><path d="M22 28L18.5 35.5L13 41.5"/></g>
+            <g class="legB"><path d="M22 28L25 35.5L22 42"/><path d="M22 28L19 35.5L16 42"/></g>
           </g>
         </g>
       </svg></div>
@@ -438,9 +463,9 @@ const DIMS = {
   region:{label:'지역별',en:'REGION',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',title:'어느 동네로 떠날까요?',
     items:['대동면','동상동','부원동','북부동','불암동','삼안동','상동면','생림면','장유1동','장유2동','장유3동','주촌면','진례면','진영읍','칠산서부동','한림면','활천동','회현동','인근지역']},
   food:{label:'음식종류별',en:'CUISINE',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v8a2 2 0 0 0 2 2v8M10 3v8a2 2 0 0 1-2 2M16 21V3c-2 1.5-3 4-3 7v3h3"/></svg>',title:'어떤 음식을 찾으세요?',
-    items:['일식','중식','양식','한식','면요리','한상차림','뷔페코스','단품요리']},
+    items:['일식','중식','양식','한식','면요리','한상차림','뷔페코스','단품요리','간식','카페']},
   mood:{label:'감정별',en:'MOOD',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 3.5 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 2.5 2 2.5-.5-3 .5-5.5 1-8z"/></svg>',title:'오늘의 감정은?',
-    items:['기쁨','슬픔','화남','감사','추워','더워','비오는 날']},
+    items:['기쁨','슬픔','화남','감사','추워','더워','비오는 날','항상']},
   age:{label:'연식별',en:'VINTAGE',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13l4-4M9.5 3h5"/></svg>',title:'어떤 연식을 찾으세요?',
     items:['노포','신상','가성비']}
 };
